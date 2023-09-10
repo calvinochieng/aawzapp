@@ -1,0 +1,152 @@
+from django.shortcuts import render,redirect, get_object_or_404
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+import json
+import boto3
+from django.contrib.auth.decorators import login_required
+
+from django.contrib.auth.models import User
+from django.contrib.auth import login, authenticate
+from .forms import RegisrationForm, PromptForm
+from django.core.exceptions import ValidationError
+from django.conf import settings
+from django.utils.html import strip_tags
+import openai
+
+def register(request):
+    if request.method == 'POST':
+        form = RegisrationForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get['email']
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+
+            user = User.objects.create_user(email=email, username= username, password= password )
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('home')
+    else:
+        form = RegisrationForm()
+    return render(request, 'registration/register.html', locals())
+
+
+def write(request):
+    API_KEY = settings.OPENAI_API_KEY
+    openai.api_key = API_KEY
+
+    if request.method == 'POST':            
+        form = PromptForm(request.POST) 
+        if form.is_valid():
+            prompt = form.cleaned_data.get('prompt').strip()
+            if not prompt:
+                return JsonResponse({'error': 'Prompt is required'})
+            
+            prompt = strip_tags(prompt)  # Remove HTML tags
+            prompt = prompt.replace('\n', '')  # Remove newlines
+            
+            try:
+                print('Start')
+                response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {'role': 'system', 'content': "You are an expert and helpful voiceover writer assistant."},
+                    {'role': 'user', 'content': f'Write a short YouTube Shorts voice over based on, : "{prompt}", it must be 200 words or less'},
+                ],
+                temperature = 0.5,
+                top_p=0.9,
+                max_tokens=1300,
+                frequency_penalty=0,
+                presence_penalty=0
+                )
+                result =  { 'text' : f'{response.choices[0].message.content}'}
+                print(result)
+
+                return JsonResponse(result)
+
+            except Exception as e:
+                print('Error')
+                return JsonResponse({'error': str(e)})
+    else:
+        return JsonResponse({'error': 'Invalid Request'})
+
+
+def speech(request):
+
+    AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
+    AWS_REGION_NAME = settings.AWS_REGION_NAME
+    if request.method == 'POST':
+        # Get the text to synthesize speech from
+        # text = request.body.decode('utf-8')
+        data = json.loads(request.body)
+
+        # Get the voice to use
+        text = data.get('text').strip()
+        voice = data.get('voice')
+
+        # Synthesize speech from the text using the specified voice
+        polly_client = boto3.Session(
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            region_name=AWS_REGION_NAME
+        ).client('polly')
+
+        response = polly_client.synthesize_speech(VoiceId=voice,
+                OutputFormat='mp3',
+                Text=text)
+
+        # Set the filename for the downloaded file
+        filename = 'awwzapp_synthesized_voice_over.mp3'
+
+        # Create the HTTP response with the synthesized audio data and the Content-Disposition header
+        http_response = HttpResponse(response['AudioStream'].read(), content_type='audio/mpeg')
+        http_response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+        return http_response
+    else:
+        # Return an HTTP 400 bad request response if the request method is not POST
+        return HttpResponseBadRequest('Only POST requests are allowed.')
+
+
+
+
+
+
+
+def index(request):                 
+    return render(request,'index.html')    
+
+def home(request):
+    return render(request, 'user/home.html')
+def writer(request):
+    return render(request, 'writer.html')
+def voice(request):
+    return render(request, 'voice.html')
+def title(request):
+    return render(request, 'title.html')
+def description(request):
+    return render(request, 'description.html')
+
+
+
+
+
+
+
+
+
+
+
+
+def about(request):
+    return render(request, 'about.html')
+def contact(request):
+    return render(request, 'contact.html')
+def terms(request):
+    return render(request, 'terms.html')
+def policy(request):
+    return render(request, 'policy.html')
+
+def error_404(request, exception):
+    return render(request,'error.html')
+def error_500(request):
+    return render(request,'error.html')

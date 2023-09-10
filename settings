@@ -1,0 +1,241 @@
+virtual env: .wwwa
+django project: awwzapp
+django apps: app, user
+static: awwz/static
+templates: awwz/templates
+static: s3
+media: s3
+
+
+database: rds
+
+database name: awwzdb
+user: awwzdbadmin
+password: password
+link:
+
+sudo -u postgres psql
+
+CREATE DATABASE awwzdb;
+
+CREATE USER awwzdbadmin WITH PASSWORD 'password';
+
+ALTER ROLE awwzdbadmin SET client_encoding TO 'utf8';
+ALTER ROLE awwzdbadmin SET default_transaction_isolation TO 'read committed';
+ALTER ROLE awwzdbadmin SET timezone TO 'Africa/Nairobi';
+
+GRANT ALL PRIVILEGES ON DATABASE awwzdb TO awwzdbadmin;
+
+\q
+
+
+# awwz/settings.py
+INSTALLED_APPS +=['django.contrib.postgres',] or
+# ....INSTALLED APPS
+    ...
+    'django.contrib.postgres',
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'awwzdb',
+        'USER': 'awwzdbadmin',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
+
+
+
+superuser: awwz
+email: calvinfpage@gmail.com
+
+settings.py
+allowed host: www.awwzapp.com awwzapp.com
+
+'''Sudo installables'''
+sudo apt-get install ngix python3-pip python3-dev libpq-dev postgresql postgresql-contrib
+
+'''Sudo pip3 installs'''
+sudo pip3 install --upgrade pip
+sudo -H pip3 install virtualenv
+Creat virtual environment
+python3 -m venv .www
+'''pip installs'''
+
+`
+django boto3 django-storages gunicorn Pillow django-cors-headers django-environ openai psycopg2 psycopg2-binary
+
+`
+
+./manage.py collectstatic
+
+# testing gurnicon
+gunicorn --bind 0.0.0.0:8000 awwzapp.wsgi
+
+# Create python3 file to run gunicorn
+
+cd ~/awwzapp
+mkdir -pv config/gunicorn
+touch ~/awwzapp/config/gunicorn/run.py
+nano ~/awwzapp/config/gunicorn/run.py
+__
+`
+"""Gunicorn *development* config file"""
+# Django WSGI application path in pattern MODULE_NAME:VARIABLE_NAME
+wsgi_app = "awwzapp.wsgi:application"
+# The granularity of Error log outputs
+loglevel = "debug"
+# The number of worker processes for handling requests
+workers = 3
+# The socket to bind
+bind = "0.0.0.0:8000"
+# Restart workers when code changes (development only!)
+reload = True
+# Write access and error info to /var/log
+accesslog = errorlog = "/var/log/gunicorn/dev.log"
+# Redirect stdout/stderr to log file
+capture_output = True
+# PID file so you can easily fetch process ID
+pidfile = "/var/run/gunicorn/dev.pid"
+# Daemonize the Gunicorn process (detach & enter background)
+daemon = True
+`
+__
+
+sudo nano /etc/systemd/system/gunicorn.service
+`
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/awwzapp
+ExecStart=/home/ubuntu/.www/bin/gunicorn --access-logfile - --workers 3 --bind unix:/run/gunicorn.sock awwzapp.wsgi:application
+[Install]
+WantedBy=multi-user.target
+`
+sudo nano /etc/systemd/system/gunicorn.socket
+
+`
+[Unit]
+Description=gunicorn socket
+
+[Socket]
+ListenStream=/run/gunicorn.sock
+
+[Install]
+WantedBy=sockets.target
+`
+'''check for any error on gunicorn service'''
+''''IMPORTANT''''
+sudo journalctl -u gunicorn.service
+
+sudo systemctl start gunicorn.service && sudo systemctl enable gunicorn.service
+
+sudo systemctl start gunicorn.socket && sudo systemctl enable gunicorn.socket
+
+troubleshot gunicorn 
+
+gunicorn awwzapp.wsgi:application --error-logfile /var/log/gunicorn/dev.log
+
+# Nginx Setup
+
+sudo nano /etc/nginx/sites-available/awwzapp
+
+server {
+
+        listen 80;
+
+        server_name 54.70.179.218 awwzapp.com www.awwzapp.com;
+
+        location = /favicon.ico {
+                access_log off;
+                log_not_found off;
+        }
+
+        # location /static/{
+        #         autoindex on; 
+        #         alias /var/www/awwz/static/;
+        #         # root /home/ubuntu/awwz;
+        # }
+
+        # location /media/ {
+        #         alias /home/ubuntu/awwz;
+        #         # root /home/ubuntu/awwz;
+        # }
+
+        location / {
+                include proxy_params;
+                proxy_pass http://unix:/run/gunicorn.sock;
+        }
+}
+
+# version 2.0
+
+server {
+
+        listen 80;
+
+        server_name awwzapp.com www.awwzapp.com;
+
+        location = /favicon.ico {
+                 access_log off; log_not_found off;
+        }
+
+        location /static/ {
+                root /home/ubuntu/awwzapp;
+        }
+
+        location /media/ {
+                root /home/ubuntu/awwzapp;
+        }
+
+        location / {
+                include proxy_params;
+                proxy_pass http://unix:/run/gunicorn.sock;
+        }
+}
+
+
+
+
+ sudo ln -s /etc/nginx/sites-available/awwzapp /etc/nginx/sites-enabled
+
+
+# Installing cerst bot for ssl https connection
+
+sudo snap install core; 
+sudo snap refresh core
+
+
+sudo snap install --classic certbot
+
+# Prepare the Certbot command
+# Execute the following instruction on the command line on the machine to ensure that the certbot command can be run.
+
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+
+
+sudo certbot --nginx
+
+# check config statuses
+
+sudo systemctl status nginx
+
+sudo nginx -t
+
+sudo systemctl restart gunicorn.socket && sudo systemctl reload nginx
+
+#coppy items form ec2 to local
+cd ~/ec2
+scp -r -i ".ssh/awwzapp_keypair.pem" awwzapp.zip ubuntu@ec2-52-34-0-230.us-west-2.compute.amazonaws.com:~/
+
+scp -r -i ".ssh/awwzapp_keypair.pem" ubuntu@ec2-54-70-179-218.us-west-2.compute.amazonaws.com:~/awwzapp .
+
+
+
+

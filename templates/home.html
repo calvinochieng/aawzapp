@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - AwwzApp</title>
+    <link rel="shortcut icon" href="/static/app/images/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/app/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/app/style.css">    
+    <style>
+      .awwzapp{
+        letter-spacing: -4px;
+      }
+        .kw-div{
+            padding-top: 20px;
+        }
+        .is-flex-1{
+            flex: 1;
+        }
+        .results{
+          font-size: 1.5em;
+          font-weight: normal;
+          margin-top: 40px;
+        }
+        .no-results{
+          margin-top:-20px;
+        }
+        .navbar-item img {
+          max-height: 1.25rem !important;
+        }
+        .hero{
+          background-image: linear-gradient(5deg, #f06292, #e91e63);
+        }
+    </style>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9Q4TESDCD5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9Q4TESDCD5');
+    </script>
+</head>
+<body>
+    <section class="hero is-danger is-fullheight">     
+      <div class="hero-head ">
+        <nav class="navbar is-fixed-top has-background-danger" role="navigation" aria-label="main navigation">
+            <div class="container">
+              <div class="navbar-brand">
+                <a class="navbar-item is-size-4	has-text-white has-text-weight-bold awwzapp	" href="/">
+                  AwwzApp
+                </a> 
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                  <span aria-hidden="true" class="has-background-white" ></span>
+                  <span aria-hidden="true" class="has-background-white" ></span>
+                  <span aria-hidden="true" class="has-background-white" ></span>
+                </a>
+              </div>
+              <div class="navbar-menu has-background-danger" id="navMenu">  
+                <div class="navbar-end"> 
+                  <a class="navbar-item has-text-white" href="{% url 'domains' %}">
+                    Generate Domain
+                  </a> 
+                  <a class="navbar-item has-text-white" href="{% url 'titles' %}">
+                    Generate Titles
+                  </a>   
+                  <a class="navbar-item has-text-white" href="/#whythis">
+                    About
+                  </a> 
+                  <a class="navbar-item has-text-white" href="/#howto">
+                    How To
+                  </a>
+                  <div class="navbar-item">
+                    <div class="buttons">
+                      <a href="{% url 'creator' %}" class="button has-background-danger has-text-white" >
+                        Create a Blog
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </nav>
+      </div>
+      <div class="hero-body is-justify-content-center	">
+        <div class="">        
+          <h1 class="padded title has-text-white has-text-weight-normal	">
+            The First Complete <strong class="has-text-weight-bold">Blog Generator</strong>
+          </h1>
+          <p class="subtitle">
+            Simply input <strong>your niche key word</strong> and get your <strong>enitre blog</strong> generated <br> from
+            <strong>domain name</strong>, titles, logo, articles, and images with just a click
+          </p>
+           
+          <a href="{% url 'domains' %}" class="button  has-text-white has-background-success is-medium is-flex-1 mr-1">
+            Get Started
+          </a>
+          <div class="subtitle mt-3 is-flex is-flex-direction-column"> 
+            <br />
+            <h2 class="padded title has-text-white has-text-weight-normal mt-5 is-size-4">Or generate only the part you need</h2>
+            <div class="is-flex flex-wrap" style="max-width: 100%; flex-flow: row wrap;"> 
+              <a href="{% url 'domains' %}" class="button kw-find has-text-white has-background-danger is-medium is-flex-1 m-1">
+                  Domain Name
+              </a>
+              <a href="{% url 'titles' %}" class="is-flex-1 button kw-find has-text-white has-background-danger is-medium m-1 ">
+                Article Titles
+              </a>
+              <a href="{% url 'creator' %}" class="button kw-find has-text-white has-background-danger is-medium is-flex-1 m-1">
+                Generate Blog
+              </a> 
+            </div>
+            <div class="container results"> 
+              <i class="no-results is-size-5">{{notags}}</i>
+              <i class="no-results is-size-5">{{notrelated}}</i>
+              {% if domain %}
+                <h2 class="title results is-size-5	">Results</h2>
+                <div class="tags are-medium">
+                  {% for name in domains %}
+                    <span class="tag">{{name}}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section is-normal " style="background:#e0f2f1;" id="whythis">
+      <div class="columns is-justify-content-center	is-align-items-center">
+        <h2 class="column is-one-quarter title has-text-right why-this-tool">Why This Tool</h2>
+        <div class="column is-half">
+          <p class="subtitle">
+            Are you having problems with your Redbubble tags, not appearing on top of search result and not making sales. YES?
+          </p>
+          <p class="subtitle">
+            With just a single <strong>keyword</strong> , this tool will generate you tags from the best selling products. It also generate more related tags hence giving more options.
+          </p>
+          <p class="subtitle">
+            These tags on your products, will give you a higher chance to appear in the top search results hence more reach and more sales.
+          </p>
+        
+        </div>
+      </div>
+    </section>
+    <section class="section is-normal has-background-danger" id="howto">
+      <div class="columns is-justify-content-center	is-align-items-center">
+        <div class="column is-half">
+          <p class="subtitle has-text-white has-text-right how-this-tool-works-subs">
+            We have searched the web for sites that offer print on demand as well as Redbubble for the best keywords used on the best selling products. And compile them together for you in one place.          
+          </p>
+          <p class="subtitle has-text-white has-text-right how-this-tool-works-subs">
+            We also know that you'll need some of the related words for your Redbubble tags, so we created a system that will check keywords and give you the best-related keywords example word <strong>love</strong> can be related to <strong>compassion, relationship, valentines day</strong>, etc. With these related keywords, you can boost your reach in search results hence more sales
+          </p>
+        </div>
+        <h2 class="column  is-one-quarter title has-text-white ">
+          How this tool works
+        </h2>
+      </div>
+    </section>
+    <script src="/static/app/js/control.js"></script>
+</body>
+</html>

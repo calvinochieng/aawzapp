@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title and Topic Generator | AwwzApp</title>
+    <meta name="description" content=" Our Blog Topic or Title Generator is a cutting-edge tool that uses advanced algorithms to generate a wide range of potential blog topics and titles based on your niche or keywords. With its powerful search capabilities, it can generate a variety of unique and engaging blog ideas that will help you stand out and attract readers. It's designed to be user-friendly and easy to use, so you can quickly and easily generate a list of potential blog topics and titles that are tailored to your specific niche or industry.">
+    <link rel="shortcut icon" href="/static/images/icons/favicon.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/app/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma-tooltip/1.2.0/bulma-tooltip.min.css" integrity="sha512-eQONsEIU2JzPniggWsgCyYoASC8x8nS0w6+e5LQZbdvWzDUVfUh+vQZFmB2Ykj5uqGDIsY7tSUCdTxImWBShYg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/static/app/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9Q4TESDCD5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9Q4TESDCD5');
+    </script>
+</head>
+<body>
+  <section class="hero is-fullheight is-flex is-flex-direction-row">
+    <div class="aside">
+      <div class="is-flex aside-content"> 
+            <a class="navbar-item text-white has-text " href="{% url 'home' %}" data-tooltip="Home">
+              <span class="icon  side-icon has-background-danger ">
+                <i class="fas fa-home"></i>
+              </span>
+            </a>
+            <a class="navbar-item text-white" href="/home/" data-tooltip="Projects">
+              <span class="icon  side-icon has-background-success ">
+                <i class="fa-solid fa-bars-progress"></i>
+              </span>
+            </a>
+
+            <a href="{% url 'creator' %}" class="navbar-item has-text-link" data-tooltip="Creator">
+              <span class="icon side-icon has-background-white-ter">
+                <i class="fa-solid fa-tools"></i>
+              </span>                     
+            </a>
+            <a class="navbar-item has-text-weight-bold has-text-white" href="#" data-tooltip="Tools">
+              <span>Tools</span>
+            </a>
+            <div class="navba-item">
+              <a class="navbar-item text-white" href="{% url 'domains' %}" data-tooltip="Domain Name Finder">  
+                <span class="icon side-icon has-background-white-ter">
+                <i class="fa-solid fa-globe  has-text-danger "></i>  
+                </span>
+              </a>  
+              <a class="navbar-item text-white" href="{% url 'titles' %}" data-tooltip="Topic Generator"> 
+                <span class="icon side-icon has-background-white">
+                <i class="fa-solid fa-heading has-text-info"></i>
+                </span>
+              </a>
+              <a class="navbar-item text-white" href="{% url 'writer' %}" data-tooltip="AI Writer">
+                <span class="icon side-icon has-background-white-ter">
+                  <i class="fa-solid fa-robot has-text-link"></i>
+                </span>  
+              </a>
+              <a class="navbar-item text-white" href="{% url 'image-search' %}" data-tooltip="Image Search">
+                <span class="icon side-icon has-background-white">
+                  <i class="fa-solid fa-camera has-text-danger"></i>
+                </span>  
+              </a>
+            </div>
+      </div>
+    </div>
+    <div class="main">
+      <nav class="navbar is-flex has-background-white-ter is-justify-content-space-between "> 
+        <div class="navbar-inline navbar-item">
+          <div class="navbar-brand is-hidden-mobile	">
+            <a class="navbar-item" href="/">
+              <span class="name" style="color: #1a1a1a !important;"><span style="color: #3273dc;">Awwz</span>App</span>
+            </a>
+          </div> 
+          <a class="navbar-item has-text-weight-bold is-flex is-align-items-center" href="#">       
+              <span> <i class="fa-solid fa-title"></i> Title Generator</span>
+          </a>
+        </div>
+    
+        <div class="navbar-inline navbar-item">
+          <div class="navbar-item"> 
+            <a class=" is-link" href="{%url 'register' %}">
+              <span class="icon">
+                <i class="fas fa-user"></i>
+              </span>
+              <span>Profile</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+<!--  -->
+
+<div class="container p-3">  
+  <p class="subtitle">
+      Enter <strong>your niche key word</strong> and generate domain names.
+  </p>
+  <div class="subtitle">          
+    <form method="POST" style="margin-top: 0px !important;" class="tool-form container">{% csrf_token %}
+      <input class="input kw-field is-medium mb-2" type="text" name="niche" placeholder="Enter Niche Keyword(s)" autofocus required>                
+        <button type="submit" class="button kw-find has-text-white has-background-danger is-medium ">Generate</button>
+    </form>
+    <div class="container is-fullheight">
+        {% if titles %}
+          {% comment %} <h2 class="title results is-size-3  ">Results</h2>
+          <p class="subtitle"> Click on any article <strong>to generate article</strong></p>
+          <div class="is-flex is-flex-direction-column">
+            {% for title in titles %}
+              <a  href="https://namecheap.com" class="title mt-0 mb-0 pt-4 pb-4 results is-size-4 {% cycle 'row1' 'row2' %}">
+                <h2 class="pl-2">{{forloop.counter}}. {{title}}</h2>
+              </a>
+            {% endfor %}
+          </div> {% endcomment %}
+        {% endif %}
+    </div>
+    <br>
+    <div class="navbar-divider"></div>
+
+    <div class="container p-2 is-size-4">
+      <h1 class="title"> Blog Topic or Title Generator</h1>
+      <p class="mb-2"> <br/> Our Blog Topic or Title Generator is a cutting-edge tool that uses advanced algorithms to generate a wide range of potential blog topics and titles based on your niche or keywords. With its powerful search capabilities, it can generate a variety of unique and engaging blog ideas that will help you stand out and attract readers. It's designed to be user-friendly and easy to use, so you can quickly and easily generate a list of potential blog topics and titles that are tailored to your specific niche or industry.</p>
+
+      <p class="mb-2"> <br/> Whether you're a blogger, marketer, or content creator, our Blog Topic or Title Generator is the perfect tool to help you take your blog to the next level. It's an effective solution to writer's block, and it can help you to come up with new and fresh ideas for your blog. With a simple click of a button, you can generate a list of potential blog topics and titles that are relevant to your niche or industry.</p>
+      
+      <p class="mb-2"> <br/> Our Blog Topic or Title Generator is also great for SEO, as it can help you to come up with titles and topics that include keywords that will help your blog to rank higher in search engine results. This can help you to reach a larger audience and attract more readers to your blog.</p>
+      
+      <p class="mb-2"> <br/> In addition, our Blog Topic or Title Generator is constantly updated with the latest trends and insights from the world of blogging and content creation, so you can be sure that the ideas it generates are always fresh and relevant.</p>
+      
+      <p class="mb-2"> <br/> So, if you're struggling to come up with a catchy and interesting blog topic or title, try our Blog Topic or Title Generator today and see the difference it can make for your blog!</p>
+      
+      <p class="mb-2"> <br/> </p>
+    </div>
+  </div>
+</div>
+<!--  -->
+
+    </div>
+  </section>    
+  <script src="/static/app/js/control.js"></script>
+</body>
+</html>
+

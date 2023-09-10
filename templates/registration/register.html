@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignUp AwwzApp</title>
+    <meta name="description" content="Please Sign Up To Smoothly use our tools">
+    <link rel="shortcut icon" href="/static/images/icons/favicon.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/app/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/app/style.css">
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9Q4TESDCD5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9Q4TESDCD5');
+    </script>
+    <style>
+        .name{
+
+        font-size: 1.5rem;
+        font-weight: bold;
+        letter-spacing: -5px;
+
+        }
+        .logo{
+            max-width: 3.75rem !important;
+            margin-bottom: 5px;
+        }
+        .navbar-dropdown{
+          border-radius: 2px !important;
+        }
+        .navbar-dropdown a{
+          max-width: 500px !important;
+        }
+        .navbar-dropdown a div{
+          max-width: 500px !important;
+          /* white-space: pre-wrap; */
+          overflow: hidden;
+          width: 100%;
+        }
+        .navbar-dropdown a div:hover{
+          color: #5C6BC0;
+        }
+        .nav-start * a:hover, .start-brand * a:hover{
+          color: #5C6BC0 !important;
+        }
+        .lander{
+          display: flex;
+          flex-direction: row;
+          flex-flow: row wrap;
+          justify-items: center;
+          align-items: center;
+
+        }
+        .lander div.hero-child{
+          max-width: 500px;
+          display: inline-flex;
+          min-width: 200px;
+          flex: 1;
+          flex-direction: column;
+          justify-content: center;
+        }
+        .tool-form{
+          max-width: 500px !important;
+          display: flex;
+          flex-direction: column;
+          border-radius: 2px;
+        }
+        @media screen and (min-width: 1024px){
+        .navbar-dropdown .navbar-item {
+            padding: 0.375rem 1rem;
+            white-space: normal !important;
+        }
+        .navbar-dropdown {
+          min-width: 500px;
+      }
+      div.hero-child:last-child{
+         display: none;
+        }
+    }
+    </style>
+       
+    <style>
+      .kw-div{
+          padding-top: 20px;
+      }
+      .kw-field{
+        min-width: 300px;
+      }
+      .kw-find{
+        flex: 1;
+      }
+      .is-flex-1{
+          flex: 1;
+      }
+  </style>
+</head>
+<body>
+  <nav class="navbar is-transparent">
+    <div class="container">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+          <span class="name" style="color: #1a1a1a !important;"><span style="color: #3273dc;">Awwz</span>App</span>
+        </a>
+        <div class="navbar-burger" data-target="navMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>  
+      <div id="navMenu" class="navbar-menu">
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="field is-grouped">
+              <p class="control">
+                <a class="bd-tw-button button" href="{% url 'login' %}">
+                  <span>
+                    SignIn
+                  </span>
+                </a>
+              </p>
+              <p class="control">
+                <a class="button is-link" href="{%url 'register' %}">
+                  <span>SignUp</span>
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <section class="hero is-link is-fullheight-with-navbar">
+    <div class="hero-body">
+      <div class="container is-flex is-justify-content-center is-align-items-center">
+        <div class="has-background-white p-3 tool-form pb-4">                  
+          <form method="POST" class="tool-form m-0">{% csrf_token %}
+              <h1 class="title pt-4 title has-text-weight-bold has-text-black	has-text-centered">Sign Up</h1>
+              <p>
+                <label for="id_email">Email:</label>
+                <input class="input kw-field is-medium mb-2"  type="email" name="email" placeholder="Email Address" required id="id_email">
+              </p>
+              <p>
+                <label for="id_username">Username:</label>
+                <input  class="input kw-field is-medium mb-2"  type="text" name="username" placeholder="Username" required id="id_username">
+              </p>
+              <p>
+                <label for="id_password">Password:</label>
+                <input class="input kw-field is-medium mb-2" type="password" placeholder="Password" name="password" required id="id_password">
+              </p> 
+              <button type="submit" class="button kw-find has-text-white has-background-danger is-medium ">SIGN UP</button>
+          </form>
+          <p class="has-text-black p-3">Have an account <a class="has-text-link" href="{% url 'login' %}">Sign In</a>  </p>
+        </div>
+    </div>
+  </section>    
+    <script src="/static/app/js/control.js"></script>
+</body>
+</html>
+
